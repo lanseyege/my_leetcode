@@ -1,0 +1,75 @@
+Given a string S, find the longest palindromic substring in S. You may assume that the maximum length of S is 1000, 
+and there exists one unique longest palindromic substring.
+
+这里，介绍两种方法
+1、Manacher method
+详细介绍：http://www.felix021.com/blog/read.php?2040
+比如，将， aba 转换为 @#a#b#a#$ 然后再去求...，
+代码：第29行最难理解，还是看详细介绍吧
+char* longestPalindrome(char* s) {
+    int len1  = strlen(s);
+    int len2 = 2*len1;
+    char *tmp = (char*)malloc(sizeof(char)*len2 + 3);  // adding '@'、'$'(as boundary) and '\0'(as end)
+    int  *len = (int*)malloc(sizeof(int)*len2 + 3);
+    //init
+    tmp[0] = '@';
+    for(int i = 1; i<= len1; i++) {
+       int d         = 2 * i;
+       tmp[d - 1] = '#';
+       tmp[d]      = s[i - 1];
+    }
+    tmp[len2 + 1] = '#';
+    tmp[len2 + 2] = '$';
+    // loop for finding the substring
+    int max = 0, max_len = 0, final_id = 0, max_id = 0;
+    for(int i = 1; i <= len2; i++) {
+       if( max > i ) {
+           len[i] = len[2 * max_id - i] >  (max - i) ? (max - i) : len[2 * max_id - i];
+       } else {
+           len[i] = 1;
+       }
+       for(; tmp[ i + len[i]] == tmp[i - len[i]]; len[i]++);
+       //update max
+       if(i + len[i] > max) {
+           max = len[i] + i;
+           max_id = i;
+       }
+       //update max_len
+       if(len[i] > max_len ) {
+           max_len   = len[i];
+           final_id  = i;
+       }
+    }
+    // the result is begin with s[(final_id +1)/2 - max_len/2 - 1], the len is max_len - 1
+    char *result = NULL;
+    final_id = (final_id + 1)/2;
+    max_len-=1;
+    result = (char*)malloc(sizeof(char)*(max_len + 1));
+    memcpy(result, s + final_id - max_len/2 - 1, max_len);
+    result[max_len] = '\0';
+    return result;
+}
+
+2、
+第二种方法非常巧妙，一个字符串若是偶回文，这中间一定有重复字符（当然奇回文也可能有），先标记重复字符的开始a，然后在标记
+重复字符的结尾b，然后在循环比较a-1和b+1处的字符是否相同。
+代码：
+string longestPalindrome(string s){
+  if(s.empty()) return "";
+  if(s.size()==1) return s;
+  int c1=0;
+  int max=0;
+  for(inti=0;i<s.size();){
+    int j=i , k=i;
+    while(k<s.size()-1 && s[k+1]==s[k]) k++;
+    int max_temp=k-j+1;
+    if(max_temp>max){
+      c1=j;
+      max=max_temp;
+    }
+  }
+  return s.substr(c1 , max);
+}
+
+比较：
+不得不说，第二种方法比第一种要易于理解的多
