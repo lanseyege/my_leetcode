@@ -1,0 +1,29 @@
+Reverse digits of an integer.
+
+Example1: x = 123, return 321
+Example2: x = -123, return -321
+分析：
+问题不难，但是有一个陷阱，就是反转之后int 溢出的问题，int所表示的数的范围
+是：[-2^31 , 2^31-1]，若超过这个界限，返回0
+代码：
+int reverse(int x) {
+    if(x==INT_MIN) return 0;
+    int flag=1;
+    if(x<0) flag=-1;
+    x=x*flag;
+    int a=0,b=0;
+    long c=0;
+    while(x!=0){
+        a=x/10;
+        b=x%10;
+        c=c*10+b;
+        if(c>INT_MAX){
+            c=0;
+            break;
+        }
+        x=a;
+    }
+    return (int)c*flag;
+}
+附加：
+相同代码java运行需要250ms，c只需4ms
