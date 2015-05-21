@@ -1,0 +1,33 @@
+坑比较多，要考虑的情况也多，开始的空格算合法字符，紧贴第一个数字的+ - 算是合法字符，其他情况算是
+非法字符，若发现非法字符 返回0。还有 ， 要考虑越界的情况，若超过int上界，则返回INT_MAX, 若超过
+int下界，则返回 INT_MIN
+代码：
+class Solution {
+public:
+    int myAtoi(string str) {
+        int n = str.size();
+        int i=0,flag=1;
+        while(str[i]==' ') i++;
+        char temp = str[i];
+        if(temp=='-'){ flag=-1;i++;}
+        else if(temp=='+'){flag=1;i++; }
+        long sum=0;
+        while(i<n){
+            temp=str[i]; i++;
+            if(temp>='0' && temp<='9'){
+                sum = sum*10 + (temp-'0');
+                if(flag==1 && sum>INT_MAX){
+                    sum=INT_MAX;
+                    break;
+                }
+                else if(flag==-1 && sum-1>INT_MAX){
+                    sum=INT_MAX+1;
+                    break;
+                }
+            }else{
+                break;
+            }
+        }
+        return (int)(sum*flag);
+    }
+};
