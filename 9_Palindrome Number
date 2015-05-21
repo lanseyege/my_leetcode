@@ -1,0 +1,33 @@
+Determine whether an integer is a palindrome. Do this without extra space
+不能使用额外空间，能想到的自然是将这个数不断取10余数，相加乘以10，在于原书比较。可以使用一种巧妙的方法
+减少比较次数，不再考虑越界的情况。
+第一种：求整个整数反转的大小，在与原整数相比较
+bool isPalindrome(int x) {
+        if(x<0)
+            return false;
+        if(x<10)
+            return true;
+        long sum=0;
+        int y=x, a;
+        while(x!=0){
+            a=x%10;
+            sum=sum*10+a;
+            x=x/10;
+        }
+        if(sum>INT_MAX)
+            return false;
+        if((int)sum == y)
+            return true;
+        return false; 
+}
+第二种：只求原整数的一半反转大小，在与原整数的一般相比较，简单了不少
+bool isPalindrome(int x) {
+    if(x<0 || (x!=0 && x%10==0))
+        return false;
+    int sum = 0;
+    while(x>sum){
+        sum = sum*10 + x%10;
+        x=x/10;
+    }
+    return (x==sum) || (x==sum/10);
+}
